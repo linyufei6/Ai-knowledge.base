@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小象设计 AIGC 知识库</title>
+  <style>
+    :root {
+      --green-900: #1b4332;
+      --green-700: #2d6a4f;
+      --green-500: #40916c;
+      --green-400: #52b788;
+      --green-200: #95d5b2;
+      --green-100: #d8f3dc;
+      --green-50: #f0f7f4;
+      --white: #ffffff;
+      --text: #1a2e1a;
+      --muted: #5a7260;
+      --border: #cce3d6;
+      --shadow: 0 4px 24px rgba(27, 67, 50, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+      background: var(--green-50);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--green-900) 0%, var(--green-700) 60%, var(--green-500) 100%);
+      color: var(--white);
+      padding: 40px 24px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+
+    .header-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .header p {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.9rem;
+      margin-top: 6px;
+    }
+
+    .main {
+      max-width: 720px;
+      margin: -28px auto 48px;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--green-700);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title::before {
+      content: "";
+      width: 4px;
+      height: 14px;
+      background: var(--green-400);
+      border-radius: 2px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: var(--green-50);
+      resize: vertical;
+      transition: border-color .2s, box-shadow .2s;
+      line-height: 1.7;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--green-400);
+      box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2);
+      background: var(--white);
+    }
+
+    textarea::placeholder { color: #9ab5a5; }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button, .btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: all .15s;
+    }
+
+    .btn-primary {
+      background: var(--green-700);
+      color: var(--white);
+    }
+
+    .btn-primary:hover { background: var(--green-900); }
+
+    .btn-outline {
+      background: var(--white);
+      color: var(--green-700);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--green-400);
+      background: var(--green-50);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid transparent;
+    }
+
+    .btn-ghost:hover { color: var(--green-700); }
+
+    .quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      padding: 6px 12px;
+      background: var(--green-100);
+      color: var(--green-700);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all .15s;
+    }
+
+    .tag:hover {
+      background: var(--green-200);
+      border-color: var(--green-400);
+    }
+
+    .hint {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: var(--green-50);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-left: 3px solid var(--green-400);
+    }
+
+    .modules {
+      display: grid;
+      gap: 10px;
+    }
+
+    .module-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      background: var(--green-50);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+      transition: all .15s;
+    }
+
+    .module-link:hover {
+      background: var(--white);
+      border-color: var(--green-400);
+      transform: translateX(4px);
+    }
+
+    .module-link .name { font-weight: 500; font-size: 0.95rem; }
+    .module-link .desc { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+    .module-link .arrow { color: var(--green-400); font-size: 1.1rem; }
+
+    .saved-list { margin-top: 12px; }
+
+    .saved-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: var(--green-50);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .saved-item p {
+      flex: 1;
+      font-size: 0.82rem;
+      color: var(--text);
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    .saved-item time {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .saved-item .actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .saved-item button {
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--green-700);
+    }
+
+    .saved-item button:hover { background: var(--green-100); }
+
+    .empty { font-size: 0.85rem; color: var(--muted); text-align: center; padding: 16px; }
+
+    .cmds {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .cmd-chip {
+      padding: 8px 14px;
+      background: var(--white);
+      border: 1px dashed var(--green-200);
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: var(--green-700);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .cmd-chip:hover {
+      background: var(--green-100);
+      border-style: solid;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--green-900);
+      color: var(--white);
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: all .3s;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 0 20px 32px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">🐘</div>
+        <h1>小象设计 AIGC 知识库</h1>
+      </div>
+      <p>IP · 营销视觉 · 提示词沉淀与复用</p>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <section class="card">
+      <div class="card-title">输入提示词</div>
+      <textarea id="promptInput" placeholder="在此输入或粘贴 Prompt…&#10;支持即梦白模、Nano Banana、Lib-tv 等各类提示词"></textarea>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="copyPrompt()">复制</button>
+        <button class="btn-outline" onclick="savePrompt()">暂存</button>
+        <button class="btn-outline" onclick="copyWithCmd('【提取可复用要素】')">提取要素</button>
+        <button class="btn-outline" onclick="copyWithCmd('【存入知识库】')">存入知识库</button>
+        <button class="btn-ghost" onclick="clearInput()">清空</button>
+      </div>
+      <div class="quick-tags">
+        <span class="tag" onclick="insertTemplate('white')">硬表面白模</span>
+        <span class="tag" onclick="insertTemplate('layout')">构图锁定</span>
+        <span class="tag" onclick="insertTemplate('material')">材质优化</span>
+        <span class="tag" onclick="insertTemplate('ref3')">三图参考</span>
+        <span class="tag" onclick="insertTemplate('render')">渲染标准</span>
+        <span class="tag" onclick="insertTemplate('negative')">负向词块</span>
+      </div>
+      <div class="hint">「提取要素 / 存入知识库」会复制带指令的完整文本，粘贴到 Cursor 对话即可归档。</div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">暂存记录</div>
+      <div id="savedList" class="saved-list">
+        <div class="empty">暂无暂存，输入后点「暂存」保存</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">知识库模块</div>
+      <div class="modules">
+        <a class="module-link" href="01-项目基础信息.md">
+          <div>
+            <div class="name">01 项目基础信息</div>
+            <div class="desc">项目背景、创意方向</div>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+        <a class="module-link" href="02-Prompt与渲染库.md">
+          <div>
+            <div class="name">02 Prompt与渲染库</div>
+            <div class="desc">提示词、渲染参数</div>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+        <a class="module-link" href="03-文字库.md">
+          <div>
+            <div class="name">03 文字库</div>
+            <div class="desc">文案、Slogan</div>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+        <a class="module-link" href="04-踩坑避坑记录.md">
+          <div>
+            <div class="name">04 踩坑避坑记录</div>
+            <div class="desc">踩坑复盘</div>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">快捷指令</div>
+      <div class="cmds">
+        <span class="cmd-chip" onclick="copyCmd('【存入知识库】')">存入知识库</span>
+        <span class="cmd-chip" onclick="copyCmd('【提取可复用要素】')">提取可复用要素</span>
+        <span class="cmd-chip" onclick="copyCmd('【调取知识库】')">调取知识库</span>
+        <span class="cmd-chip" onclick="copyCmd('【基于知识库生成新prompt】')">生成新 Prompt</span>
+        <span class="cmd-chip" onclick="copyCmd('【新增避坑点】')">新增避坑点</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>小象设计 · AIGC 视觉项目知识库</footer>
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'xiaoxiang_prompts';
+    const DRAFT_KEY = 'xiaoxiang_draft';
+
+    const templates = {
+      white: '4K 超高清，8K 渲染，OC 渲染器，C4D 标准建模，硬表面拓扑，精准布线，硬边倒角，细腻曲面细分，细节锐利，写实物理材质，真实光影，柔和环境漫反射，干净纯白摄影棚背景，正交俯视角，产品级建模，工业高精度模型，体积厚重扎实，专业产品渲染，极致细节',
+      layout: '（引用初稿）我对这张图目前的构图和布局非常满意，请不要改变任何物体的位置。请使用 Pro 模型处理以下细节：极度增强画面细节，请将画面提升至 8K 级别的超高清质感。',
+      material: '修复金属/时间元素模型，仅优化模型质感，保持原有颜色、亮度和冷暖比例，不增加额外高光或色彩，不改变{项目主色}。',
+      ref3: '图1是白膜，请严格按照［参考图1］的构图生成。\n图2是材质参考说明书（注意：仅参考其材质类型，而非其草稿质感，告诉 AI 哪里是金属、哪里是反射材质和大体颜色）。\n图3是环境色、氛围与光影（核心氛围），请严格参考［参考图3］的色彩和光影。',
+      render: 'C4D + Octane Render 渲染器风格，逼真、细节丰富、电影级（Film-like）写实 CG 质感，超高清晰度（Ultra-high definition），8K 高分辨率渲染，完美构图（perfect composition），大师级光影（Masterful lighting），电影级深度（film-like depth），极致明暗细节和宝石折射。',
+      negative: '无溢出发光，无荧光白边，无水晶通透特效，无自发光，无辉光，无卡通黏土膨起，无 AI 畸变，无锯齿，无模糊，无漂浮虚化，无发白雾感，无强烈硬阴影，背景不变'
+    };
+
+    const input = document.getElementById('promptInput');
+
+    const saved = localStorage.getItem(DRAFT_KEY);
+    if (saved) input.value = saved;
+
+    input.addEventListener('input', () => {
+      localStorage.setItem(DRAFT_KEY, input.value);
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => showToast('已复制到剪贴板'));
+    }
+
+    function copyPrompt() {
+      const v = input.value.trim();
+      if (!v) return showToast('请先输入提示词');
+      copyText(v);
+    }
+
+    function copyWithCmd(cmd) {
+      const v = input.value.trim();
+      if (!v) return showToast('请先输入提示词');
+      copyText(cmd + '\n' + v);
+    }
+
+    function copyCmd(cmd) {
+      copyText(cmd);
+    }
+
+    function clearInput() {
+      input.value = '';
+      localStorage.removeItem(DRAFT_KEY);
+      showToast('已清空');
+    }
+
+    function insertTemplate(key) {
+      const t = templates[key];
+      input.value = input.value ? input.value + '\n' + t : t;
+      localStorage.setItem(DRAFT_KEY, input.value);
+      input.focus();
+      showToast('已插入模板');
+    }
+
+    function getSaved() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch { return []; }
+    }
+
+    function savePrompt() {
+      const v = input.value.trim();
+      if (!v) return showToast('请先输入提示词');
+      const list = getSaved();
+      list.unshift({ text: v, time: new Date().toLocaleString('zh-CN') });
+      if (list.length > 20) list.length = 20;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      renderSaved();
+      showToast('已暂存');
+    }
+
+    function deleteSaved(i) {
+      const list = getSaved();
+      list.splice(i, 1);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      renderSaved();
+    }
+
+    function loadSaved(i) {
+      const list = getSaved();
+      input.value = list[i].text;
+      localStorage.setItem(DRAFT_KEY, input.value);
+      showToast('已载入');
+    }
+
+    function copySaved(i) {
+      copyText(getSaved()[i].text);
+    }
+
+    function renderSaved() {
+      const list = getSaved();
+      const el = document.getElementById('savedList');
+      if (!list.length) {
+        el.innerHTML = '<div class="empty">暂无暂存，输入后点「暂存」保存</div>';
+        return;
+      }
+      el.innerHTML = list.map((item, i) => `
+        <div class="saved-item">
+          <p>${esc(item.text)}</p>
+          <time>${item.time}</time>
+          <div class="actions">
+            <button onclick="loadSaved(${i})">载入</button>
+            <button onclick="copySaved(${i})">复制</button>
+            <button onclick="deleteSaved(${i})">删除</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function esc(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    }
+
+    renderSaved();
+  </script>
+</body>
+</html>
